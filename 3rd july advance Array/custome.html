@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Custom Map Polyfill</title>
+</head>
+<body>
+  <h2>Custom .map() Polyfill</h2>
+  <pre id="output"></pre>
+
+  <script>
+    Array.prototype.myMap = function(callback) {
+      if (typeof callback !== "function") {
+        throw new TypeError(callback + " is not a function");
+      }
+
+      let result = [];
+      for (let i = 0; i < this.length; i++) {
+        
+        if (this.hasOwnProperty(i)) {
+          result.push(callback(this[i], i, this));
+        }
+      }
+      return result;
+    };
+
+    
+    const numbers = [1, 2, 3, 4, 5];
+    const doubled = numbers.myMap(function(num, index) {
+      return num * 2;
+    });
+
+    
+    document.getElementById("output").textContent = `
+Original: [${numbers}]
+Mapped  : [${doubled}]
+    `;
+  </script>
+</body>
+</html>

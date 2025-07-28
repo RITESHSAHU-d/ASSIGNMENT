@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Form Page</title>
+    <style>
+        p{
+            font-size:25px;
+            color:red;
+            text-align:center;
+        }
+        form{
+            text-align:center;
+        }
+        button{
+            color:red;
+            background-color:yellow;
+            font-size:20px;
+        }
+        .box{
+            border:1px solid black;
+            background-color:yellow;
+            width:600px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+    <form>
+        <p>Personal Detail</p>
+        <label for="name">NAME:</label>
+        <input type="text" id="name" placeholder="Enter your name">
+        <br>
+        <label for="password">PASSWORD:</label>
+        <input type="password" id="password" placeholder="Enter your password">
+        <br>
+        <label for=="email">Email-id:</label>
+        <input type="email" id="email" placeholder="Enter your email">
+        <br>
+        <label >Gender:</label>
+        <input type="radio" name="gender" id="male">
+        <label for="male">Male</label>
+        <input type="radio" name="gender" id="female">
+        <label for=""female">Female</label>
+        <br>
+        <p>Education Qualification</p>
+        <label for="degree">Degree:</label>
+        <select id="degree">
+            <option >B.tech</option>
+            <option>B.E.</option>
+        </select>
+        <br>
+        <label for="engineering">Engineering:</label>
+        <select id="engineering">
+            <option >CSE</option>
+            <option >ECE</option>
+            <option >EEE</option>
+        </select>
+        <br>
+        <label for="hobbies">Hobbies:</label>
+        <input type="checkbox" id="chess">
+        <label for="chess">Playing chess</label>
+        <input type="checkbox" id="reading">
+        <label for="reading">Reading books</label>
+        <br>
+        <p>Address</p>
+        <input type="address" placeholder="Enter your address">
+        <br>
+        <label for="resume">Attch Resume:</label>
+        <input type="file" id="resume">
+        <br>
+        <button type="submit">Submit</button>
+    </form>
+    </div>
+</body>
+</html>

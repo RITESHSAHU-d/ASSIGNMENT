@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pomodoro Timer</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      text-align: center;
+      background-color: #f2f2f2;
+      color: #333;
+      padding: 30px;
+    }
+
+    h1 {
+      color: #d64545;
+    }
+
+    .timer {
+      font-size: 4rem;
+      margin: 20px 0;
+      color: #2c3e50;
+    }
+
+    .controls button {
+      padding: 10px 20px;
+      font-size: 1rem;
+      margin: 5px;
+      cursor: pointer;
+      background-color: #3498db;
+      border: none;
+      color: white;
+      border-radius: 5px;
+    }
+
+    .controls button:hover {
+      background-color: #2980b9;
+    }
+
+    .config input {
+      width: 60px;
+      margin: 5px;
+      padding: 5px;
+      text-align: center;
+    }
+
+    .session-type {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+      color: #16a085;
+    }
+
+    .indicator {
+      margin-top: 15px;
+      font-size: 1.5rem;
+      color: #e67e22;
+    }
+  </style>
+</head>
+<body>
+  <h1>Pomodoro Timer</h1>
+
+  <div class="config">
+    <label>Work (min): <input type="number" id="work-duration" value="25"></label>
+    <label>Short Break (min): <input type="number" id="short-break-duration" value="5"></label>
+    <label>Long Break (min): <input type="number" id="long-break-duration" value="15"></label>
+    <label>Pomodoros per Cycle: <input type="number" id="pomodoros-per-cycle" value="4"></label>
+  </div>
+
+  <div class="session-type" id="session-label">Work</div>
+  <div class="timer" id="timer">25:00</div>
+
+  <div class="controls">
+    <button onclick="startTimer()">Start</button>
+    <button onclick="pauseTimer()">Pause</button>
+    <button onclick="resetTimer()">Reset</button>
+  </div>
+
+  <div class="indicator" id="cycle-indicator">🔴 ⚪ ⚪ ⚪</div>
+
+  <script>
+    let timer;
+    let isRunning = false;
+    let remainingTime = 0;
+    let currentSession = 'work';
+    let pomodoroCount = 0;
+
+    function getInputValues() {
+      return {
+        work: parseInt(document.getElementById("work-duration").value) * 60,
+        shortBreak: parseInt(document.getElementById("short-break-duration").value) * 60,
+        longBreak: parseInt(document.getElementById("long-break-duration").value) * 60,
+        cycle: parseInt(document.getElementById("pomodoros-per-cycle").value),
+      };
+    }
+
+    function updateDisplay() {
+      const minutes = Math.floor(remainingTime / 60).toString().padStart(2, '0');
+      const seconds = (remainingTime % 60).toString().padStart(2, '0');
+      document.getElementById("timer").textContent = `${minutes}:${seconds}`;
+    }
+
+    function updateSessionLabel() {
+      document.getElementById("session-label").textContent =
+        currentSession === "work"
+          ? "Work"
+          : currentSession === "short"
+          ? "Short Break"
+          : "Long Break";
+    }
+
+    function updateCycleIndicator() {
+      const { cycle } = getInputValues();
+      let indicator = "";
+      for (let i = 0; i < cycle; i++) {
+        indicator += i < pomodoroCount ? "🔴 " : "⚪ ";
+      }
+      document.getElementById("cycle-indicator").textContent = indicator.trim();
+    }
+
+    function switchSession() {
+      const { work, shortBreak, longBreak, cycle } = getInputValues();
+      if (currentSession === "work") {
+        pomodoroCount++;
+        currentSession = pomodoroCount % cycle === 0 ? "long" : "short";
+        remainingTime = currentSession === "long" ? longBreak : shortBreak;
+      } else {
+        currentSession = "work";
+        remainingTime = work;
+      }
+      updateSessionLabel();
+      updateCycleIndicator();
+    }
+
+    function tick() {
+      if (remainingTime > 0) {
+        remainingTime--;
+        updateDisplay();
+      } else {
+        clearInterval(timer);
+        isRunning = false;
+        switchSession();
+        startTimer();
+      }
+    }
+
+    function startTimer() {
+      if (isRunning) return;
+      const durations = getInputValues();
+      if (!remainingTime) {
+        remainingTime =
+          currentSession === "work"
+            ? durations.work
+            : currentSession === "short"
+            ? durations.shortBreak
+            : durations.longBreak;
+      }
+      updateSessionLabel();
+      updateDisplay();
+      updateCycleIndicator();
+      isRunning = true;
+      timer = setInterval(tick, 1000);
+    }
+
+    function pauseTimer() {
+      clearInterval(timer);
+      isRunning = false;
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      currentSession = "work";
+      pomodoroCount = 0;
+      remainingTime = getInputValues().work;
+      updateSessionLabel();
+      updateDisplay();
+      updateCycleIndicator();
+    }
+
+    // Initialize on load
+    resetTimer();
+  </script>
+</body>
+</html>
